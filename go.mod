@@ -1,4 +1,4 @@
-module TowerUniteMoneyWheelAFKScript
+module WheelOfMoneyAFKScript
 
 go 1.22
 
