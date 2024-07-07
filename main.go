@@ -6,6 +6,8 @@ import (
 	"github.com/go-vgo/robotgo"
 )
 
+
+
 func main() {
 	fpid, err := robotgo.FindIds("Tower-Win64-Shipping.exe")
 	if err != nil {
@@ -18,10 +20,10 @@ func main() {
 	}
 }
 
-func pressSpace() {
+func pressSpace(pid int) {
 
 }
 
-func antiAfk() {
+func antiAfk(pid int) {
 
 }
