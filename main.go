@@ -1,10 +1,12 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"time"
 
 	"github.com/go-vgo/robotgo"
+	hook "github.com/robotn/gohook"
 )
 
 func main() {
@@ -12,25 +14,57 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	if len(fpid) > 0 {
 		log.Println("Found process with pid:", fpid[0])
-		err := scriptLoop(fpid[0])
-		if err != nil {
-			log.Fatal(err)
-		}
+		var isRunning bool
+		setupScriptHook(fpid[0], &isRunning)
 	} else {
 		log.Fatal("Process not found")
 	}
 }
 
-func scriptLoop(pid int) error {
-	for {
-		err := pressSpace(pid)
-		if err != nil {
-			return err
+func setupScriptHook(pid int, isRunning *bool) {
+	fmt.Println("CTRL + S to start/stop the script")
+	hook.Register(hook.KeyDown, []string{"s", "ctrl"}, func(e hook.Event) {
+		*isRunning = !*isRunning
+		if *isRunning {
+			fmt.Println("Script started")
+			go scriptLoop(pid, isRunning)
+		} else {
+			fmt.Println("Script stopped")
 		}
-		time.Sleep(1 * time.Second)
+
+		fmt.Println("Running:", *isRunning)
+	})
+
+	s := hook.Start()
+	<-hook.Process(s)
+}
+
+func scriptLoop(pid int, isRunning *bool) {
+	spaceTicker := time.NewTicker(1 * time.Second)
+	afkTicker := time.NewTicker(1 * time.Minute)
+	defer spaceTicker.Stop()
+	defer afkTicker.Stop()
+
+	for *isRunning {
+		select {
+		case <-spaceTicker.C:
+			if err := pressSpace(pid); err != nil {
+				log.Printf("Error pressing space: %v", err)
+				return
+			}
+			log.Println("Pressed space")
+		case <-afkTicker.C:
+			if err := antiAfk(pid); err != nil {
+				log.Printf("Error performing anti-afk: %v", err)
+				return
+			}
+			log.Println("Performed anti-afk")
+		}
 	}
+	log.Println("Script loop exited")
 }
 
 func pressSpace(pid int) error {
