@@ -30,7 +30,7 @@ func setupScriptHook(pid int, isRunning *bool) {
 		*isRunning = !*isRunning
 		if *isRunning {
 			go scriptLoop(pid, isRunning)
-		} 
+		}
 		fmt.Println("Running:", *isRunning)
 	})
 
@@ -39,8 +39,8 @@ func setupScriptHook(pid int, isRunning *bool) {
 }
 
 func scriptLoop(pid int, isRunning *bool) {
-	spaceTicker := time.NewTicker(1 * time.Second)
-	afkTicker := time.NewTicker(1 * time.Minute)
+	spaceTicker := time.NewTicker(6 * time.Second)
+	afkTicker := time.NewTicker(5 * time.Minute)
 	defer spaceTicker.Stop()
 	defer afkTicker.Stop()
 
@@ -71,7 +71,8 @@ func pressSpace(pid int) error {
 	return nil
 }
 
+// TODO
 func antiAfk(pid int) error {
-
+	time.Sleep(1 * time.Second)
 	return nil
 }
