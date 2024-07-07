@@ -25,16 +25,12 @@ func main() {
 }
 
 func setupScriptHook(pid int, isRunning *bool) {
-	fmt.Println("CTRL + S to start/stop the script")
-	hook.Register(hook.KeyDown, []string{"s", "ctrl"}, func(e hook.Event) {
+	fmt.Println("ALT + S to start/stop the script")
+	hook.Register(hook.KeyDown, []string{robotgo.Alt, robotgo.KeyS}, func(e hook.Event) {
 		*isRunning = !*isRunning
 		if *isRunning {
-			fmt.Println("Script started")
 			go scriptLoop(pid, isRunning)
-		} else {
-			fmt.Println("Script stopped")
-		}
-
+		} 
 		fmt.Println("Running:", *isRunning)
 	})
 
