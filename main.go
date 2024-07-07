@@ -9,7 +9,6 @@ import (
 	"time"
 )
 
-// stop channel
 var stopped bool
 
 func main() {
@@ -42,7 +41,6 @@ func main() {
 func start() {
 	go spamSpace()
 	go moveMouseRandom()
-	go antiAFK()
 }
 
 func spamSpace() {
@@ -66,20 +64,6 @@ func moveMouseRandom() {
 			robotgo.MoveSmooth(screenWidth, screenHeight, 0.5, 1.0, 0)
 			fmt.Println("Moved mouse")
 			time.Sleep(5000 * time.Millisecond)
-		}
-	}
-}
-
-func antiAFK() {
-	for {
-		if !stopped {
-			var keys = []string{"a", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "z"}
-			for _, key := range keys {
-				robotgo.KeyTap(key)
-				fmt.Println("Pressed key: ", key)
-			}
-			fmt.Println("Pressed all keys")
-			time.Sleep(10 * time.Second)
 		}
 	}
 }
